@@ -67,6 +67,23 @@ export const fetchDeleteApiToken = async (id: number) => {
   const { data } = await axios.delete(`/api/admin/apiToken/${id}`);
   return data?.data || {};
 };
+
+// IP白名单相关API
+export const fetchWhiteIPs = async () => {
+  const { data } = await axios.get(`/api/admin/whiteip`);
+  return data?.data || [];
+};
+
+export const fetchAddWhiteIP = async (payload: any) => {
+  const { data } = await axios.post(`/api/admin/whiteip`, payload);
+  return data?.data || {};
+};
+
+export const fetchDeleteWhiteIP = async (id: number) => {
+  const { data } = await axios.delete(`/api/admin/whiteip/${id}`);
+  return data?.data || {};
+};
+
 // export const getImg = async (url: string) => {
 //   const { data } = await axios.get(`/api/img?url=${url}`);
 //   console.log(data)

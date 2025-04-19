@@ -7,6 +7,7 @@ import { Catelog } from "./pages/Catelog";
 import {ApiToken} from "./pages/ApiToken";
 import { Setting } from "./pages/Setting";
 import { Tools } from "./pages/Tools";
+import { WhiteIP } from "./pages/WhiteIP";
 import zhCN from "antd/lib/locale/zh_CN";
 import { MainLayout } from "./layout/MainLayout";
 import { fetchTools } from "./utils/api";
@@ -18,8 +19,8 @@ function App() {
 
 
   useEffect(()=>{
-    console.log("欢迎使用 Van Nav 项目")
-    console.log("项目地址: https://github.com/mereithhh/van-nav")
+    console.log("欢迎使用 Hirsun Van Nav 项目")
+    console.log("https://github.com/guomaimang/van-nav")
   },[])
 
   const reload = useCallback(async () => {
@@ -83,6 +84,16 @@ function App() {
                 <AuthLayout>
                   <MainLayout>
                     <Setting />
+                  </MainLayout>
+                </AuthLayout>
+              }
+            />
+            <Route
+              path="/whiteip"
+              element={
+                <AuthLayout>
+                  <MainLayout>
+                    <WhiteIP />
                   </MainLayout>
                 </AuthLayout>
               }
