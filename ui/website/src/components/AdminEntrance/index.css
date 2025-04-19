@@ -1,0 +1,13 @@
+.admin-entrance-box {
+  position: fixed;
+  cursor: pointer;
+}
+
+.admin-entrance-box svg {
+  fill: #3d3d3d;
+  transition: all 0.3s;
+}
+
+.admin-entrance-box svg:hover {
+  fill: #121212;
+}
