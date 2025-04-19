@@ -25,7 +25,7 @@
 ### Docker
 
 ```
-docker run -d --name tools --restart always -p 6412:6412 -v /path/to/your/data:/app/data mereith/van-nav:latest
+docker run -d --name vannav --restart always -p 6412:6412 -v /opt/vannav-hjm:/app/data hanjiaming/vannav:x.x.x-dev
 ```
 
 打开浏览器 [http://localhost:6412](http://localhost:6412) 即可访问。
