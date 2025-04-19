@@ -98,3 +98,8 @@ type Catelog struct {
 	Sort int    `json:"sort"`
 	Hide bool `json:"hide"`
 }
+
+type WhiteIP struct {
+	Id int    `json:"id"`
+	IP string `json:"ip"`
+}

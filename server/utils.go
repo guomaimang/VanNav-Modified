@@ -75,3 +75,58 @@ func getMIME(suffix string) string {
 	}
 	return t
 }
+
+// 检查IP是否在白名单中
+func isIPInWhiteList(ip string, db *sql.DB) bool {
+	sql_check_ip := `
+		SELECT COUNT(*) FROM nav_whiteip
+		WHERE ip = ?;
+	`
+	var count int
+	err := db.QueryRow(sql_check_ip, ip).Scan(&count)
+	checkErr(err)
+	return count > 0
+}
+
+// 获取所有白名单IP
+func getAllWhiteIP(db *sql.DB) []WhiteIP {
+	sql_get_white_ip := `
+		SELECT id, ip FROM nav_whiteip;
+	`
+	rows, err := db.Query(sql_get_white_ip)
+	checkErr(err)
+	defer rows.Close()
+	
+	var whiteIPs []WhiteIP
+	for rows.Next() {
+		var whiteIP WhiteIP
+		err = rows.Scan(&whiteIP.Id, &whiteIP.IP)
+		checkErr(err)
+		whiteIPs = append(whiteIPs, whiteIP)
+	}
+	return whiteIPs
+}
+
+// 添加白名单IP
+func addWhiteIP(ip string, db *sql.DB) {
+	sql_add_white_ip := `
+		INSERT INTO nav_whiteip (ip)
+		VALUES (?);
+	`
+	stmt, err := db.Prepare(sql_add_white_ip)
+	checkErr(err)
+	_, err = stmt.Exec(ip)
+	checkErr(err)
+}
+
+// 删除白名单IP
+func deleteWhiteIP(id int, db *sql.DB) {
+	sql_delete_white_ip := `
+		DELETE FROM nav_whiteip
+		WHERE id = ?;
+	`
+	stmt, err := db.Prepare(sql_delete_white_ip)
+	checkErr(err)
+	_, err = stmt.Exec(id)
+	checkErr(err)
+}

@@ -178,6 +178,7 @@ func GetAdminAllDataHandler(c *gin.Context) {
 	catelogs := getAllCatelog(db, true)
 	setting := getSetting(db)
 	tokens := getApiTokens(db)
+	whiteIPs := getAllWhiteIP(db)
 	userId, ok := c.Get("uid")
 	if !ok {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -196,7 +197,8 @@ func GetAdminAllDataHandler(c *gin.Context) {
 				"name": c.GetString("username"),
 				"id":   userId,
 			},
-			"tokens": tokens,
+			"tokens":   tokens,
+			"whiteIPs": whiteIPs,
 		},
 	})
 }
@@ -425,5 +427,62 @@ func ManifastHanlder(c *gin.Context) {
 		"scope":            "/",
 		"theme_color":      "#000000",
 		"background_color": "#ffffff",
+	})
+}
+
+// 获取所有白名单IP
+func GetWhiteIPHandler(c *gin.Context) {
+	whiteIPs := getAllWhiteIP(db)
+	c.JSON(200, gin.H{
+		"success": true,
+		"data":    whiteIPs,
+	})
+}
+
+// 添加白名单IP
+func AddWhiteIPHandler(c *gin.Context) {
+	var data struct {
+		IP string `json:"ip"`
+	}
+	if err := c.ShouldBindJSON(&data); err != nil {
+		checkErr(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success":      false,
+			"errorMessage": err.Error(),
+		})
+		return
+	}
+	
+	// 检查IP是否已存在
+	if isIPInWhiteList(data.IP, db) {
+		c.JSON(200, gin.H{
+			"success":      false,
+			"errorMessage": "IP已存在于白名单中",
+		})
+		return
+	}
+	
+	addWhiteIP(data.IP, db)
+	c.JSON(200, gin.H{
+		"success": true,
+		"message": "添加白名单IP成功",
+	})
+}
+
+// 删除白名单IP
+func DeleteWhiteIPHandler(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success":      false,
+			"errorMessage": "ID格式错误",
+		})
+		return
+	}
+	
+	deleteWhiteIP(id, db)
+	c.JSON(200, gin.H{
+		"success": true,
+		"message": "删除白名单IP成功",
 	})
 }

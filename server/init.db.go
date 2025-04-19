@@ -120,14 +120,16 @@ func initDB() {
 		ALTER TABLE nav_setting ADD COLUMN hideAdmin BOOLEAN;
 		`
 	_, err = db.Exec(sql_create_table)
-	checkErr(err)
+	// 不输出错误，因为可能列已存在
+	fmt.Println("尝试添加hideAdmin列")
 
 	// 设置表表结构升级-20230627
 	sql_create_table = `
 		ALTER TABLE nav_setting ADD COLUMN hideGithub BOOLEAN;
 		`
 	_, err = db.Exec(sql_create_table)
-	checkErr(err)
+	// 不输出错误，因为可能列已存在
+	fmt.Println("尝试添加hideGithub列")
 
 	// api token 表
 	sql_create_table = `
@@ -192,4 +194,12 @@ func initDB() {
 	rows.Close()
 	fmt.Println("数据库初始化成功。。。")
 	migration()
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS nav_whiteip (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			ip TEXT
+		);
+	`)
+	checkErr(err)
 }
