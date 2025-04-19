@@ -428,7 +428,7 @@ func main() {
 			admin.POST("/catelog", AddCatelogHandler)
 			admin.DELETE("/catelog/:id", DeleteCatelogHandler)
 			admin.PUT("/catelog/:id", UpdateCatelogHandler)
-			
+
 			// 白名单IP相关路由
 			admin.GET("/whiteip", GetWhiteIPHandler)
 			admin.POST("/whiteip", AddWhiteIPHandler)

@@ -86,19 +86,33 @@ func JWTCheck(c *gin.Context) bool {
 		return true
 	}
 
-	// 然后检查token
-	rawToken := c.Request.Header.Get("Authorization")
+	// 然后检查token - 支持两种header格式
+	var rawToken string
+	// 先尝试从 Authorization header 获取
+	rawToken = c.Request.Header.Get("Authorization")
 	if rawToken == "" {
+		// 如果没有，再尝试从 Token header 获取
 		rawToken = c.Request.Header.Get("Token")
 	}
+
+	// 如果都没有token，返回false
 	if rawToken == "" {
 		return false
 	}
 
 	// 解析 token
-	_, err := ParseJWT(rawToken)
+	token, err := ParseJWT(rawToken)
 	if err != nil {
 		return false
 	}
-	return true
+
+	// 验证token是否有效
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// token有效，设置用户信息到上下文
+		c.Set("username", claims["name"])
+		c.Set("uid", claims["id"])
+		return true
+	}
+
+	return false
 }
