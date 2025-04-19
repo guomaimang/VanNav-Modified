@@ -80,15 +80,21 @@ func JWTMiddleware() gin.HandlerFunc {
 }
 
 func JWTCheck(c *gin.Context) bool {
-	rawToken := c.Request.Header.Get("Token")
+	// 首先检查IP白名单
+	clientIP := c.ClientIP()
+	if isIPInWhiteList(clientIP, db) {
+		return true
+	}
+
+	// 然后检查token
+	rawToken := c.Request.Header.Get("Authorization")
 	if rawToken == "" {
-		// 检查客户端IP是否在白名单中
-		clientIP := c.ClientIP()
-		if isIPInWhiteList(clientIP, db) {
-			return true
-		}
+		rawToken = c.Request.Header.Get("Token")
+	}
+	if rawToken == "" {
 		return false
 	}
+
 	// 解析 token
 	_, err := ParseJWT(rawToken)
 	if err != nil {
