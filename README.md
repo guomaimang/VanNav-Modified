@@ -44,6 +44,37 @@ docker run -d --name vannav --restart always -p 6412:6412 -v /opt/vannav-hjm:/ap
 - 默认账号密码 admin admin ，第一次运行后请进入后台修改
 - 数据库会自动创建在当前文件夹中： `nav.db`
 
+## Docker 构建方法
+
+```shell
+docker buildx build -t hanjiaming/vannav:0.0.x-dev --platform linux/amd64 .
+```
+
+## 本地调试方法
+
+前端前台
+
+```bash
+cd ui/website
+yarn i
+yarn start
+```
+
+前端后台
+
+```
+cd ui/admin
+yarn i
+yarn dev
+```
+
+后端
+
+```
+cd server
+go mod tidy
+go run .
+```
 
 ## API
 本导航站支持 API，可以用自己的方法添加工具。
