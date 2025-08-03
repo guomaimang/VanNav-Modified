@@ -21,7 +21,10 @@ RUN cd /app && ls -la && go mod tidy && go build .
 
 FROM alpine:latest
 ENV TZ="Asia/Shanghai"
-RUN apk --no-cache --no-progress add \
+# 使用阿里云镜像源加速包下载
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk update && \
+    apk --no-cache --no-progress add \
     ca-certificates \
     tzdata && \
     cp "/usr/share/zoneinfo/$TZ" /etc/localtime && \
