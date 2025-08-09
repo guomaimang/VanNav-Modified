@@ -1,4 +1,4 @@
 export const config = {
-    logoUrl: "https://pic.hanjiaming.com.cn/2025/04/19/fcd0bad0dc3cd.png",
+    logoUrl: "/src/assets/logo.png",
     title: "Hirsun Van Nav"
 }
