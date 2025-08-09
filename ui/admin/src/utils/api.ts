@@ -1,7 +1,37 @@
 import axios from "axios";
-axios.defaults.headers.common = {
-  Authorization: window.localStorage.getItem("_token") ?? "",
-};
+import { message } from "antd";
+
+// 设置默认的Authorization header
+const token = window.localStorage.getItem("_token");
+if (token) {
+  axios.defaults.headers.common.Authorization = token;
+}
+
+// 添加响应拦截器来处理JWT验证失败的情况
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // 检查是否是401错误（未授权）
+    if (error.response?.status === 401) {
+      // 清除本地存储的用户信息和token
+      window.localStorage.removeItem("_user");
+      window.localStorage.removeItem("_token");
+      
+      // 清除axios默认header
+      delete axios.defaults.headers.common.Authorization;
+      
+      // 显示错误消息
+      message.error("登录已过期，请重新登录");
+      
+      // 跳转到登录页面
+      window.location.href = "/admin/login";
+    }
+    
+    return Promise.reject(error);
+  }
+);
 export const login = async (username: string, password: string) => {
   const { data } = await axios.post("/api/login", {
     name: username,

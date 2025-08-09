@@ -8,8 +8,19 @@ export const getLoginState = () => {
     if (user && token) {
         try {
             const {exp} = jwt_decode(token) as any;
-            return !dayjs(exp*1000).isBefore(dayjs());
+            const isValid = !dayjs(exp*1000).isBefore(dayjs());
+            
+            // 如果token已过期，清除本地存储
+            if (!isValid) {
+                window.localStorage.removeItem("_user");
+                window.localStorage.removeItem("_token");
+            }
+            
+            return isValid;
         }catch (err) {
+            // JWT解析失败，清除本地存储
+            window.localStorage.removeItem("_user");
+            window.localStorage.removeItem("_token");
             return false;
         }
     }

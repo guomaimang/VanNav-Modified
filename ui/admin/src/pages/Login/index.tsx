@@ -19,9 +19,7 @@ export const Login: React.FC<LoginProps> = (props) => {
         window.localStorage.setItem("_token", token);
         window.localStorage.setItem("_user", user);
         setStore({ ...store, user });
-        axios.defaults.headers.common = {
-          Authorization: token,
-        };
+        axios.defaults.headers.common.Authorization = token;
         message.success("登录成功!");
         navigate("/");
       } else {
