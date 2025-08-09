@@ -384,6 +384,8 @@ var port = flag.String("port", "6412", "指定监听端口")
 
 func main() {
 	flag.Parse()
+	// 在应用启动时生成随机 JWT 密钥
+	generateJWTSecret()
 	initDB()
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()

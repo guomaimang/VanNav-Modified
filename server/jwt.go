@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"net/http"
 	"time"
 
@@ -8,8 +10,20 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-// JTW 密钥
-var jwtSecret = []byte("boy_next_door")
+// JWT 密钥 - 在启动时随机生成
+var jwtSecret []byte
+
+// 生成随机 JWT 密钥
+func generateJWTSecret() {
+	// 生成 32 字节的随机密钥
+	key := make([]byte, 32)
+	_, err := rand.Read(key)
+	if err != nil {
+		// 如果随机生成失败，使用当前时间作为种子生成一个备用密钥
+		key = []byte(base64.StdEncoding.EncodeToString([]byte(time.Now().String())))
+	}
+	jwtSecret = key
+}
 
 // 签名一个 JTW
 func SignJWT(user User) (string, error) {
