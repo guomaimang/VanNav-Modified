@@ -80,31 +80,23 @@ func JWTMiddleware() gin.HandlerFunc {
 }
 
 func JWTCheck(c *gin.Context) bool {
-	// 首先检查IP白名单
-	clientIP := c.ClientIP()
-	if isIPInWhiteList(clientIP, db) {
-		return true
-	}
-
-	// 从 Authorization header 获取token
+	// 先检查JWT token（登录状态优先）
 	rawToken := c.Request.Header.Get("Authorization")
-	if rawToken == "" {
-		return false
+	if rawToken != "" {
+		// 解析 token
+		token, err := ParseJWT(rawToken)
+		if err == nil {
+			// 验证token是否有效
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				// token有效，设置用户信息到上下文
+				c.Set("username", claims["name"])
+				c.Set("uid", claims["id"])
+				return true // 已登录用户始终可以查看隐藏项目
+			}
+		}
 	}
 
-	// 解析 token
-	token, err := ParseJWT(rawToken)
-	if err != nil {
-		return false
-	}
-
-	// 验证token是否有效
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		// token有效，设置用户信息到上下文
-		c.Set("username", claims["name"])
-		c.Set("uid", claims["id"])
-		return true
-	}
-
-	return false
+	// 如果未登录，检查IP白名单
+	clientIP := c.ClientIP()
+	return isIPInWhiteList(clientIP, db)
 }
