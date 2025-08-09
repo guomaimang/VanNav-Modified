@@ -10,7 +10,7 @@ export const FetchList = async () => {
     // 设置请求头部信息
     const token = localStorage.getItem('_token');
     const headers = {
-        'Token': token || ''
+        'Authorization': token || ''
     };
     const { data: raw } = await axios.get(baseUrl, {headers});
     const { data } = raw;

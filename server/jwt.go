@@ -86,16 +86,8 @@ func JWTCheck(c *gin.Context) bool {
 		return true
 	}
 
-	// 然后检查token - 支持两种header格式
-	var rawToken string
-	// 先尝试从 Authorization header 获取
-	rawToken = c.Request.Header.Get("Authorization")
-	if rawToken == "" {
-		// 如果没有，再尝试从 Token header 获取
-		rawToken = c.Request.Header.Get("Token")
-	}
-
-	// 如果都没有token，返回false
+	// 从 Authorization header 获取token
+	rawToken := c.Request.Header.Get("Authorization")
 	if rawToken == "" {
 		return false
 	}
